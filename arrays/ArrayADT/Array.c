@@ -108,12 +108,70 @@ int RecursiveBinarySearch(struct Array *arr, int lo, int hi, int target)
     return -1;
 }
 
+/* Returns element at given index or -1 if given index is not valid or element is not found */
+int Get(struct Array *arr, int index)
+{
+    if (index > 0 && index < arr->length) return arr->A[index];
+    return -1;
+}
+
+/* Replaces element at given index. Returns index if successful or -1 if not */
+int Set(struct Array *arr, int index, int item)
+{
+    if (index > 0 && index < arr->length)
+    {
+        arr->A[index] = item;
+        return index;
+    }
+    return -1;
+}
+
+/* Get the minimum element in an array */
+int Min(struct Array *arr)
+{
+    int minimum = arr->A[0];
+    for (int i = 0; i < arr->length; i++)
+        if (arr->A[i] < minimum) minimum = arr->A[i];
+    return minimum;
+}
+
+/* Get the maximum element in an array */
+int Max(struct Array *arr)
+{
+    int maximum = arr->A[0];
+    for (int i = 0; i < arr->length; i++)
+        if (arr->A[i] > maximum) maximum = arr->A[i];
+    return maximum;
+}
+
+/* Returns the sum of all elements in an array */
+int Sum(struct Array *arr)
+{
+    int total = 0;
+    for (int i = 0; i < arr->length; i++)
+        total += arr->A[i];
+    return total;
+}
+
+/* Returns the average of an array */
+float Average(struct Array *arr)
+{
+    return (float) Sum(arr) / arr->length;
+}
+
+/* Reverse array in place */
+void Reverse(struct Array *arr)
+{
+    for (int i = 0, j = arr->length-1; i < j; i++, j--)
+        Swap(arr, i, j);
+}
+
 int main()
 {
     // Create an array structure
     struct Array arr = 
     {
-        {1, 2, 3, 4, 5, 6, 7, 8, 9}, // initialize values
+        {1, 23, 35, 4, 75, 6, 7, 98, 9}, // initialize values
         10,              // set size
         9                // set length
     };
@@ -122,5 +180,15 @@ int main()
     printf("Search for %d: %d\n", 3, RecursiveBinarySearch(&arr, 0, 9, 3));
     printf("Search for %d: %d\n", 89, IterativeBinarySearch(&arr, 89));
     printf("Search for %d: %d\n", -14, RecursiveBinarySearch(&arr, 0, 9, -14));
+    printf("Element at index: %d is %d\n", 2, Get(&arr, 2));
+    printf("Setting element at index: %d to %d\n", 2, 100);
+    Set(&arr, 2, 100);
+    Display(&arr);
+    printf("Sum of array: %d\n", Sum(&arr));
+    printf("Average of array: %f\n", Average(&arr));
+    printf("Maximum item: %d\n", Max(&arr));
+    printf("Minimum item: %d\n", Min(&arr));
+    printf("Reversing array....\n");
+    Reverse(&arr);
     Display(&arr);
 }
