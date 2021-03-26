@@ -154,9 +154,16 @@ int Sum(struct Array *arr)
 }
 
 /* Returns the average of an array */
-int Average(struct Array *arr)
+float Average(struct Array *arr)
 {
-    return Sum(arr) / arr->length;
+    return (float) Sum(arr) / arr->length;
+}
+
+/* Reverse array in place */
+void Reverse(struct Array *arr)
+{
+    for (int i = 0, j = arr->length-1; i < j; i++, j--)
+        Swap(arr, i, j);
 }
 
 int main()
@@ -164,7 +171,7 @@ int main()
     // Create an array structure
     struct Array arr = 
     {
-        {1, 2, 3, 4, 5, 6, 7, 8, 9}, // initialize values
+        {1, 23, 35, 4, 75, 6, 7, 98, 9}, // initialize values
         10,              // set size
         9                // set length
     };
@@ -173,9 +180,15 @@ int main()
     printf("Search for %d: %d\n", 3, RecursiveBinarySearch(&arr, 0, 9, 3));
     printf("Search for %d: %d\n", 89, IterativeBinarySearch(&arr, 89));
     printf("Search for %d: %d\n", -14, RecursiveBinarySearch(&arr, 0, 9, -14));
+    printf("Element at index: %d is %d\n", 2, Get(&arr, 2));
+    printf("Setting element at index: %d to %d\n", 2, 100);
+    Set(&arr, 2, 100);
     Display(&arr);
     printf("Sum of array: %d\n", Sum(&arr));
-    printf("Average of array: %d\n", Average(&arr));
+    printf("Average of array: %f\n", Average(&arr));
     printf("Maximum item: %d\n", Max(&arr));
     printf("Minimum item: %d\n", Min(&arr));
+    printf("Reversing array....\n");
+    Reverse(&arr);
+    Display(&arr);
 }
