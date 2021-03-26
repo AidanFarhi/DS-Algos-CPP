@@ -108,6 +108,57 @@ int RecursiveBinarySearch(struct Array *arr, int lo, int hi, int target)
     return -1;
 }
 
+/* Returns element at given index or -1 if given index is not valid or element is not found */
+int Get(struct Array *arr, int index)
+{
+    if (index > 0 && index < arr->length) return arr->A[index];
+    return -1;
+}
+
+/* Replaces element at given index. Returns index if successful or -1 if not */
+int Set(struct Array *arr, int index, int item)
+{
+    if (index > 0 && index < arr->length)
+    {
+        arr->A[index] = item;
+        return index;
+    }
+    return -1;
+}
+
+/* Get the minimum element in an array */
+int Min(struct Array *arr)
+{
+    int minimum = arr->A[0];
+    for (int i = 0; i < arr->length; i++)
+        if (arr->A[i] < minimum) minimum = arr->A[i];
+    return minimum;
+}
+
+/* Get the maximum element in an array */
+int Max(struct Array *arr)
+{
+    int maximum = arr->A[0];
+    for (int i = 0; i < arr->length; i++)
+        if (arr->A[i] > maximum) maximum = arr->A[i];
+    return maximum;
+}
+
+/* Returns the sum of all elements in an array */
+int Sum(struct Array *arr)
+{
+    int total = 0;
+    for (int i = 0; i < arr->length; i++)
+        total += arr->A[i];
+    return total;
+}
+
+/* Returns the average of an array */
+int Average(struct Array *arr)
+{
+    return Sum(arr) / arr->length;
+}
+
 int main()
 {
     // Create an array structure
@@ -123,4 +174,8 @@ int main()
     printf("Search for %d: %d\n", 89, IterativeBinarySearch(&arr, 89));
     printf("Search for %d: %d\n", -14, RecursiveBinarySearch(&arr, 0, 9, -14));
     Display(&arr);
+    printf("Sum of array: %d\n", Sum(&arr));
+    printf("Average of array: %d\n", Average(&arr));
+    printf("Maximum item: %d\n", Max(&arr));
+    printf("Minimum item: %d\n", Min(&arr));
 }
