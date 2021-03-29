@@ -4,7 +4,7 @@
 /* Array Structure */
 struct Array
 {
-    int A[10];  // array of default size 10
+    int *A;     // array must be created via malloc()
     int size;   // size of array
     int length; // number of elements currently in array
 };
@@ -166,29 +166,55 @@ void Reverse(struct Array *arr)
         Swap(arr, i, j);
 }
 
+/* Check if an array sorted. Returns 0 if sorted and 1 if not sorted. */
+int IsSorted(struct Array *arr)
+{
+    for (int i = 0; i < arr->length-1; i++)
+        if (arr->A[i+1] < arr->A[i]) return 11;
+    return 0;
+}
+
+/* Merge 2 sorted arrays */
+struct Array* Merge(struct Array *arr1, struct Array *arr2)
+{
+    struct Array *merged = (struct Array *) malloc(sizeof(struct Array));
+    merged->size = arr1->length + arr2->length;
+    merged->A = (int*) malloc(sizeof(int) * merged->size);
+    merged->length = merged->size;
+    int m_ptr = 0, p1 = 0, p2 = 0;
+    while (m_ptr < merged->size)
+    {
+        if (p1 < arr1->length)
+            if (p2 < arr2->length)
+                if (arr1->A[p1] < arr2->A[p2])
+                    merged->A[m_ptr++] = arr1->A[p1++];
+                else
+                    merged->A[m_ptr++] = arr2->A[p2++];
+            else
+                merged->A[m_ptr++] = arr1->A[p1++];
+        else
+            merged->A[m_ptr++] = arr2->A[p2++];
+    }
+    return merged;
+}
+
 int main()
 {
-    // Create an array structure
-    struct Array arr = 
+    struct Array *arr1 = (struct Array *) malloc(sizeof(struct Array));
+    struct Array *arr2 = (struct Array *) malloc(sizeof(struct Array));
+    arr1->A = (int *) malloc(sizeof(int) * 5);
+    arr2->A = (int *) malloc(sizeof(int) * 5);
+    arr1->length = 5;
+    arr1->size = 5;
+    arr2->length = 5;
+    arr2->size = 5;
+    for (int i = 0; i < 5; i++)
     {
-        {1, 23, 35, 4, 75, 6, 7, 98, 9}, // initialize values
-        10,              // set size
-        9                // set length
-    };
-    Display(&arr);
-    printf("Search for %d: %d\n", 7, IterativeBinarySearch(&arr, 7));
-    printf("Search for %d: %d\n", 3, RecursiveBinarySearch(&arr, 0, 9, 3));
-    printf("Search for %d: %d\n", 89, IterativeBinarySearch(&arr, 89));
-    printf("Search for %d: %d\n", -14, RecursiveBinarySearch(&arr, 0, 9, -14));
-    printf("Element at index: %d is %d\n", 2, Get(&arr, 2));
-    printf("Setting element at index: %d to %d\n", 2, 100);
-    Set(&arr, 2, 100);
-    Display(&arr);
-    printf("Sum of array: %d\n", Sum(&arr));
-    printf("Average of array: %f\n", Average(&arr));
-    printf("Maximum item: %d\n", Max(&arr));
-    printf("Minimum item: %d\n", Min(&arr));
-    printf("Reversing array....\n");
-    Reverse(&arr);
-    Display(&arr);
+        arr1->A[i] = i+1;
+        arr2->A[i] = i+3;
+    }
+    Display(arr1);
+    Display(arr2);
+    struct Array *merged = Merge(arr1, arr2);
+    Display(merged);
 }
