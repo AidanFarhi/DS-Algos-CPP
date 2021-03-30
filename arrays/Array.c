@@ -198,6 +198,95 @@ struct Array* Merge(struct Array *arr1, struct Array *arr2)
     return merged;
 }
 
+/* SET OPERATIONS */
+
+/* Union on two sorted sets */
+struct Array* UnionSorted(struct Array *arr1, struct Array *arr2)
+{
+    struct Array *union_arr = (struct Array *) malloc(sizeof(struct Array));
+    union_arr->size = arr1->length + arr2->length;
+    union_arr->A = (int*) malloc(sizeof(int) * union_arr->size);
+    int u_ptr = 0, p1 = 0, p2 = 0;
+    while (p1 < arr1->length || p2 < arr2->length)
+    {
+        if (p1 < arr1->length)
+            if (p2 < arr2->length)
+                if (arr1->A[p1] < arr2->A[p2])
+                    union_arr->A[u_ptr++] = arr1->A[p1++];
+                else if (arr1->A[p1] > arr2->A[p2])
+                    union_arr->A[u_ptr++] = arr2->A[p2++];
+                else
+                {   // elements are equal
+                    union_arr->A[u_ptr++] = arr1->A[p1++];
+                    p2++;
+                }
+            else
+                union_arr->A[u_ptr++] = arr1->A[p1++];
+        else
+            union_arr->A[u_ptr++] = arr2->A[p2++];
+    }
+    union_arr->length = u_ptr;
+    return union_arr;
+}
+
+/* Intersection (all elements common to both) of two sorted sets */
+struct Array* IntersectionSorted(struct Array *arr1, struct Array *arr2)
+{
+    struct Array *intersection_arr = (struct Array *) malloc(sizeof(struct Array));
+    intersection_arr->size = arr1->length + arr2->length;
+    intersection_arr->A = (int*) malloc(sizeof(int) * intersection_arr->size);
+    int int_ptr = 0, p1 = 0, p2 = 0;
+    while (p1 < arr1->length || p2 < arr2->length)
+    {
+        if (p1 < arr1->length)
+            if (p2 < arr2->length)
+                if (arr1->A[p1] < arr2->A[p2])
+                    p1++;
+                else if (arr1->A[p1] > arr2->A[p2])
+                    p2++;
+                else
+                {   // elements are equal
+                    intersection_arr->A[int_ptr++] = arr1->A[p1++];
+                    p2++;
+                }
+            else 
+                break;
+        else
+            break;
+    }
+    intersection_arr->length = int_ptr;
+    return intersection_arr;
+}
+
+/* Difference (all elements unique to arr1) of two sets  */
+struct Array* DifferenceSorted(struct Array *arr1, struct Array *arr2)
+{
+    struct Array *difference_arr = (struct Array *) malloc(sizeof(struct Array));
+    difference_arr->size = arr1->length + arr2->length;
+    difference_arr->A = (int*) malloc(sizeof(int) * difference_arr->size);
+    int dif_ptr = 0, p1 = 0, p2 = 0;
+    while (p1 < arr1->length || p2 < arr2->length)
+    {
+        if (p1 < arr1->length)
+            if (p2 < arr2->length)
+                if (arr1->A[p1] < arr2->A[p2])
+                    difference_arr->A[dif_ptr++] = arr1->A[p1++];
+                else if (arr1->A[p1] > arr2->A[p2])
+                    p2++;
+                else
+                {   // elements are equal
+                    p1++;
+                    p2++;
+                }
+            else 
+                difference_arr->A[dif_ptr++] = arr1->A[p1++];
+        else
+            break;
+    }
+    difference_arr->length = dif_ptr;
+    return difference_arr;
+}
+
 int main()
 {
     struct Array *arr1 = (struct Array *) malloc(sizeof(struct Array));
@@ -216,5 +305,11 @@ int main()
     Display(arr1);
     Display(arr2);
     struct Array *merged = Merge(arr1, arr2);
+    struct Array *unioned = UnionSorted(arr1, arr2);
+    struct Array *intersected = IntersectionSorted(arr1, arr2);
+    struct Array *difference = DifferenceSorted(arr1, arr2);
     Display(merged);
+    Display(unioned);
+    Display(intersected);
+    Display(difference);
 }
