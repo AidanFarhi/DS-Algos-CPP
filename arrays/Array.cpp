@@ -46,6 +46,8 @@ public:
     Array* IntersectionSorted(Array *arr);
     Array* DifferenceSorted(Array *arr);
     int GetLength();
+    int GetSize();
+    void SetSize(int new_size);
     void SetLength(int new_length);
     int* GetArray();
 };
@@ -220,18 +222,18 @@ Array* Array::Merge(Array *arr2)
 {
     Array *merged = new Array(length + arr2->GetLength());
     int m_ptr = 0, p1 = 0, p2 = 0;
-    while (m_ptr < merged->size)
+    while (m_ptr < merged->GetSize())
     {
         if (p1 < length)
-            if (p2 < arr2->length)
-                if (A[p1] < arr2->A[p2])
-                    merged->A[m_ptr++] = A[p1++];
+            if (p2 < arr2->GetLength())
+                if (A[p1] < arr2->GetArray()[p2])
+                    merged->GetArray()[m_ptr++] = A[p1++];
                 else
-                    merged->A[m_ptr++] = arr2->A[p2++];
+                    merged->GetArray()[m_ptr++] = arr2->GetArray()[p2++];
             else
-                merged->A[m_ptr++] = A[p1++];
+                merged->GetArray()[m_ptr++] = A[p1++];
         else
-            merged->A[m_ptr++] = arr2->A[p2++];
+            merged->GetArray()[m_ptr++] = arr2->GetArray()[p2++];
     }
     return merged;
 }
@@ -251,6 +253,16 @@ int* Array::GetArray()
     return A;
 }
 
+int Array::GetSize()
+{
+    return size;
+}
+
+void Array::SetSize(int new_size)
+{
+    size = new_size;
+}
+
 /* SET OPERATIONS */
 
 /* Union on two sorted sets */
@@ -258,7 +270,7 @@ Array* Array::UnionSorted(Array *arr2)
 {
     Array *union_arr = new Array(length + arr2->GetLength());
     int u_ptr = 0, p1 = 0, p2 = 0;
-    while (p1 < length || p2 < arr2->length)
+    while (p1 < length || p2 < arr2->GetLength())
     {
         if (p1 < length)
             if (p2 < arr2->GetLength())
@@ -332,4 +344,17 @@ Array* Array::DifferenceSorted(Array *arr2)
     }
     difference_arr->SetLength(dif_ptr);
     return difference_arr;
+}
+
+int main()
+{
+    Array *test = new Array(10);
+    for (int i = 0; i < 10; i++)
+        test->Append(i+1);
+    test->Display();
+    cout << "Average: " << test->Average() << endl;
+    cout << "Sum: " << test->Sum() << endl;
+    test->Reverse();
+    test->Display();
+    test->~Array();
 }
