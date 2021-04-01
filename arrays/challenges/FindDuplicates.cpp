@@ -2,7 +2,7 @@
 #include <vector>
 using namespace std;
 
-vector<int>* find_duplicates(int *arr, int len)
+vector<int>* find_duplicates_sorted(int *arr, int len)
 {
     vector<int> *duplicates = new vector<int>;
     bool found_duplicate = false;
@@ -30,15 +30,22 @@ vector<int>* find_duplicates(int *arr, int len)
     return duplicates;
 }
 
+void show_vector(vector<int>* v)
+{
+    int *arr = v->data();
+    int n = v->size();
+    cout << "[";
+    for (int i = 0; i < n; i++)
+    {
+        if (i == n-1) { cout << arr[i] << "]" << endl; break; }
+        cout << arr[i] << ", ";
+    }
+}
 
 int main()
 {
-    int test[19] = {-34, -31, -31, -5, -5, -1, 0, 0, 0, 1, 1, 6, 7, 88, 88, 200, 244, 555, 555};
-    vector<int> *duplicates = find_duplicates(test, 19);
-    int *arr = duplicates->data();
-    int n = duplicates->size();
-    cout << "Duplicates: ";
-    for (int i = 0; i < n; i++)
-        cout << arr[i] << " ";
-    cout << endl;
+    int sorted[20] = {-34, -31, -31, -5, -5, -1, 0, 0, 0, 1, 1, 6, 7, 88, 88, 200, 200, 244, 555, 555};
+    int unsorted[20] = {4, 1, 6, 2, -11, -11, 7, 2, 5, 4, 55, 55, -2, -22, -22, 788, 266, 3, 3, 3};
+    vector<int> *duplicates = find_duplicates_sorted(sorted, 20);
+    show_vector(duplicates);
 }
