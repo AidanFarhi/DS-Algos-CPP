@@ -1,63 +1,74 @@
 #include <iostream>
 using namespace std;
 
-/* Row major mapping formula: (r*r+1/2) + c+1 */
-
-class LowerTriMatrix
+class LowTriMat
 {
-private:
-    int *A;
-    int n;
-public:
-    LowerTriMatrix(int size)
-    {
-        n = size;
-        A = new int[n*n/2];
-    }
-    void set(int r, int c, int el);
-    int get(int r, int c);
-    void display();
-    ~LowerTriMatrix() { delete []A; }
+    private:
+        int *A;
+        int n;
+    public:
+        /* Constructor */
+        LowTriMat(int size)
+        {
+            A = new int[size*(size+1)/2];
+            n = size;
+        }
+        /* Method Declarations */
+        void set(int r, int c, int el);
+        int get(int r, int c);
+        void display();
+        void populate();
+        /* Destructor */
+        ~LowTriMat(){ delete []A; }
 };
 
-void LowerTriMatrix::set(int r, int c, int el)
+/* Method Definitions */
+
+/* Sets item at given row and col. (indexes start at 1) */
+void LowTriMat::set(int r, int c, int el)
 {
-    if (r >= c && r >= 0 && c >= 0 && el > 0)
-        A[r*r+1/2+c+1] = el;
+    if (r >= c && r >= 0 && c >= 0 && el >= 0)
+        A[r*(r-1)/2 + c-1] = el;
 }
 
-int LowerTriMatrix::get(int r, int c)
+/* Gets item at given row and col. (indexes start at 1) */
+int LowTriMat::get(int r, int c)
 {
     if (r >= c && r >= 0 && c >= 0)
-        return A[r*r+1/2+c+1];
+        return A[r*(r-1)/2 + c-1];
     return 0;
 }
 
-void LowerTriMatrix::display()
+/* Displays Matrix */
+void LowTriMat::display()
 {
-    for (int i = 0; i < n; i++)
+    for (int i = 1; i <= n; i++)
     {
-        for (int j = 0; j < n; j++)
-        {
+        for (int j = 1; j <= n; j++)
             if (i >= j)
-                cout << A[i*i+1/2+j+1] << " ";
-            else
+                cout << get(i, j) << " ";
+            else    
                 cout << "0 ";
-        }
         cout << endl;
     }
 }
 
+/* Popluates lower triangle with 1's */
+void LowTriMat::populate()
+{
+    for (int i = 1; i <= n; i++)
+        for (int j = 1; j <= n; j++)
+            if (i >= j)
+                set(i, j, 1);
+}
+
 int main()
 {
-    LowerTriMatrix *m = new LowerTriMatrix(5);
-    int num = 1;
-    for (int i = 0; i < 5; i++)
-        for (int j = 0; j < 5; j++)
-            if (i >= j)
-                m->set(i, j, num);
-    m->display();
-    m->set(4, 4, 5);
-    m->display();
-    m->~LowerTriMatrix();
+    int sz;
+    cout << "Enter size of matrix: ";
+    cin >> sz;
+    LowTriMat *mat = new LowTriMat(sz);
+    mat->populate();
+    mat->display();
+    mat->~LowTriMat();
 }
