@@ -16,8 +16,8 @@ class LowTriMat
         /* Method Declarations */
         void set(int r, int c, int el);
         int get(int r, int c);
-        void diplay();
-        void popluate();
+        void display();
+        void populate();
         /* Destructor */
         ~LowTriMat(){ delete []A; }
 };
@@ -40,7 +40,7 @@ int LowTriMat::get(int r, int c)
 }
 
 /* Displays Matrix */
-void LowTriMat::diplay()
+void LowTriMat::display()
 {
     for (int i = 1; i <= n; i++)
     {
@@ -54,7 +54,7 @@ void LowTriMat::diplay()
 }
 
 /* Popluates lower triangle with 1's */
-void LowTriMat::popluate()
+void LowTriMat::populate()
 {
     for (int i = 1; i <= n; i++)
         for (int j = 1; j <= n; j++)
@@ -68,7 +68,7 @@ int main()
     cout << "Enter size of matrix: ";
     cin >> sz;
     LowTriMat *mat = new LowTriMat(sz);
-    mat->popluate();
-    mat->diplay();
+    mat->populate();
+    mat->display();
     mat->~LowTriMat();
 }
