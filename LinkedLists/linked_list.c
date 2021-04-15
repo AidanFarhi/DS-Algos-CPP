@@ -41,6 +41,7 @@ void reverse_list_pointers(LinkedList *ll);
 void reverse_list_recursive(LinkedList *ll, Node *cur, Node *prev);
 void append_list(LinkedList *ll1, LinkedList* ll2);
 LinkedList* merge_sorted_lists(LinkedList *ll1, LinkedList *ll2);
+int has_loop(LinkedList *ll);
 
 /* Function Implementations */
 
@@ -176,6 +177,7 @@ int pop_back(LinkedList *ll)
         prev->next = NULL;
         ll->tail = prev;
     }
+    ll->size--;
     return data;
 }
 
@@ -315,6 +317,7 @@ void remove_duplicates_sorted(LinkedList *ll)
                 prev->next = n->next;
                 free(n);
                 n = prev->next;
+                ll->size--;
             } else
             {
                 prev = n;
@@ -435,6 +438,20 @@ LinkedList* merge_sorted_lists(LinkedList *ll1, LinkedList *ll2)
     merged->head = m_head;
     merged->size = ll1->size + ll2->size;
     return merged;
+}
+
+/* Checks if a linked list contains a loop */
+int has_loop(LinkedList *ll)
+{
+    Node *p, *q;
+    p = q = ll->head;
+    do
+    {
+        p = p->next;
+        q = q->next;
+        q = q != NULL ? q->next : q;
+    } while (p && q && p != q);
+    return p == q ? 1 : 0;
 }
 
 int main()
