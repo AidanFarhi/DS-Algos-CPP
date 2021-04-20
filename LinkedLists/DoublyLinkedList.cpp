@@ -47,6 +47,7 @@ class DLL
         }
         cout << endl;
     }
+
     void traverse_backward()
     {
         Node *n = tail;
@@ -60,9 +61,10 @@ class DLL
         }
         cout << endl;
     }
+
     void insert_head(int val)
     {
-        if (head == NULL)
+        if (head == NULL || size == 0)
         {
             head = new Node(val);
             tail = head;
@@ -75,6 +77,7 @@ class DLL
         }
         size++;
     }
+
     void insert_tail(int val)
     {
         if (head == NULL) { insert_head(val); }
@@ -87,6 +90,7 @@ class DLL
             size++;
         }
     }
+
     void insert_at(int index, int val)
     {
         if (index == 0) { insert_head(val); }
@@ -104,17 +108,105 @@ class DLL
             size++;
         }
     }
-    ~DLL(){}
+
+    int pop_head()
+    {
+        if (!head) return 0; // If list is empty
+        int data = head->data; // data to be returned
+        if (size == 1)  // If there is only one item
+        {
+            head->next = NULL;
+            tail->prev = NULL;
+            head = NULL;
+            tail = NULL;
+        } else
+        {
+            Node *t = head;
+            head = head->next;
+            head->prev = NULL;
+            t->next = NULL;
+            t = NULL;
+            if (size == 2) tail->prev = NULL;
+        }
+        size--;
+        return data;
+    }
+
+    int pop_tail()
+    {
+        if (!tail) return 0; // If list is empty
+        else if (size == 1) { pop_head(); }
+        else
+        {
+            int data = tail->data;
+            Node *t = tail;
+            tail = tail->prev;
+            tail->next = NULL;
+            t->prev = NULL;
+            t = NULL;
+            if (size == 2) head->next = NULL;
+            size--;
+            return data;
+        }
+    }
+
+    void reverse()
+    {
+        if (size > 1)
+        {
+            tail = head;
+            Node *n = head;
+            Node *prev;
+            Node *t;
+            while (n)
+            {
+                prev = n;
+                t = n->next;
+                n->next = n->prev;
+                n->prev = t;
+                n = t;
+            }
+            head = prev;
+        }
+    }
+
+    int delete_at(int index)
+    {
+        if (index == 0) { pop_head(); }
+        else if (index == size-1) { pop_tail(); }
+        else if (index > 0 && index < size-1)
+        {
+            Node *n = head;
+            for (int i = 0; i < index; i++)
+                n = n->next;
+            int data = n->data;
+            n->prev->next = n->next;
+            n->next->prev = n->prev;
+            delete n;
+            size--;
+            return data;
+        } else { return 0; }
+    }
+
+    ~DLL()
+    {
+        Node *n = head;
+        while (n)
+        {
+            Node *t = n->next;
+            delete n;
+            n = t;
+        }
+    }
 };
 
 int main()
 {
-    int arr[] = {1, 2, 3, 4, 5, 6, 7};
-    DLL *dll = new DLL(arr, 7);
-    dll->insert_at(0, 100);
-    dll->insert_at(8, 99);
-    dll->insert_at(8, 88);
+    int arr[] = {1, 2, 3, 4, 5, 6};
+    DLL *dll = new DLL(arr, 6);
+    dll->delete_at(3);
     dll->traverse_forward();
     dll->traverse_backward();
+    dll->~DLL();
 }
 
