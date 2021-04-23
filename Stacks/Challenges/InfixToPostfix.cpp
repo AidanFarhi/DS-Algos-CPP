@@ -36,10 +36,16 @@ map<char,int>* in_stack_map_constructor()
     return ism;
 }
 
-/* Helper function */
+/* Helper functions */
 bool is_operator(map<char, int> *mp, char ch)
 {
     return mp->count(ch) == 1 ? true : false;
+}
+
+bool is_operand(char ch)
+{
+    if (ch == '+' || ch == '-' || ch == '/' || ch == '*') return false;
+    return true;
 }
 
 /* Solution */
@@ -62,14 +68,17 @@ string infix_to_postfix(string *infix)
                 {
                     postfix += st.top();
                     st.pop(); 
-                } else if (infix_char_prec == stack_top_prec)
+                } 
+                else if (infix_char_prec == stack_top_prec)
                 {
                     st.pop();
-                } else if (infix_char_prec > 0)
+                } 
+                else if (infix_char_prec > 0)
                 {
                     st.push(infix->at(i++));
                 }
-            } else
+            } 
+            else
             {
                 if (osm->at(infix->at(i)) != 0)
                     st.push(infix->at(i++));
@@ -92,10 +101,62 @@ string infix_to_postfix(string *infix)
     return postfix;
 }
 
+int perform_operation(int x1, int x2, char op)
+{
+    switch (op)
+    {
+    case '+':
+        return (x1 + x2) + '0';
+        break;
+    case '-':
+        return (x1 - x2) + '0';
+    case '*':
+        return (x1 * x2) + '0';
+    case '/':
+        return (x1 / x2) + '0';
+        break;
+    default:
+        return -1;
+        break;
+    }
+}
+
+int evaluate_postfix(string postfix)
+{
+    stack<char> st;
+    int x1, x2;
+    for (int i = 0; i < postfix.length(); i++)
+    {
+        if (is_operand(postfix[i])) // push all operands to the stack
+        {
+            st.push(postfix[i]);
+        } 
+        else // pop two operands off the stack and perform operation
+        {
+            x2 = st.top() - '0';
+            st.pop();
+            x1 = st.top() - '0';
+            st.pop();
+            st.push(perform_operation(x1, x2, postfix[i]));
+        }
+    }
+    return st.top() - '0';
+}
+
 int main()
 {
-    string test = "((a+b)*c)-d^e^f";
-    cout << "Prefix: " << test << endl;
-    string res = infix_to_postfix(&test);
-    cout << "Postfix: " << res << endl;
+    string input;
+    int result;
+    while (1)
+    {
+        cout << "Enter an operation or -1 to quit: ";
+        cin >> input;
+        if (input == "-1") break;
+        cout << "Infix: " << input << endl;
+        input = infix_to_postfix(&input);
+        cout << "Postfix: " << input << endl;
+        result = evaluate_postfix(input);
+        cout << "Result: " << result << endl;
+    }
+    cout << "Program ended." << endl;
 }
