@@ -39,6 +39,12 @@ int search_recurse(BST* bst, int target);
 int search_helper(Node* n, int target);
 void inorder_recurse(BST* bst);
 void inorder_helper(Node* n);
+void delete_recurse(BST* bst, int target);
+Node* delete_recurse_helper(Node* n, int target);
+int height(Node* root);
+Node* get_successor(Node *n);
+Node* get_predecessor(Node *n);
+void create_BST_from_preorder();
 
 void insert_iter(BST* bst, int item)
 {
@@ -136,6 +142,73 @@ void inorder_helper(Node* n)
         inorder_helper(n->right);
 }
 
+void delete_recurse(BST* bst, int target)
+{
+    bst->root = delete_recurse_helper(bst->root, target);
+}
+
+Node* delete_recurse_helper(Node* n, int target)
+{
+    if (n == NULL)
+        return NULL;
+    else if (n->left == NULL && n->right == NULL && n->data == target)
+    {
+        free(n);
+        return NULL;
+    }
+    else if (n->data > target)
+        n->left = delete_recurse_helper(n->left, target);
+    else if (n->data < target)
+        n->right = delete_recurse_helper(n->right, target);
+    else
+    {
+        if (height(n->left) > height(n->right))
+        {
+            Node* t = get_predecessor(n->left);
+            n->data = t->data;
+            n->left = delete_recurse_helper(n->left, t->data);
+        }
+        else
+        {
+            Node* t = get_successor(n->right);
+            n->data = t->data;
+            n->right = delete_recurse_helper(n->right, t->data);
+        }
+    }
+    return n;
+}
+
+Node* get_predecessor(Node *n)
+{
+    if (n->right)
+        return get_predecessor(n->right);
+    return n;
+}
+
+Node* get_successor(Node *n)
+{
+    if (n->left)
+        return get_successor(n->left);
+    return n;
+}
+
+int height(Node* root)
+{
+    if (root == NULL)
+        return -1;
+    else
+    {
+        int x = height(root->left);
+        int y = height(root->right);
+        return x > y ? x + 1 : y + 1;
+    }
+}
+
+void create_BST_from_preorder()
+{
+    
+}
+
 int main()
 {
     int arr[] = {5, 3, 9, 2, 4, 6, 10};
@@ -155,5 +228,15 @@ int main()
             printf("%d is in the tree.\n", x);
         else
             printf("%d is not in the tree.\n", x);
+        printf("Enter an item to delete: ");
+        scanf("%d", &x);
+        delete_recurse(bst, x);
+        printf("Deleted %d from tree.\n", x);
+        if (bst->root == NULL)
+            break;
+        printf("Inorder: ");
+        inorder_recurse(bst);
+        printf("\n");
     }
+    printf("Program Ended.\n");
 }
