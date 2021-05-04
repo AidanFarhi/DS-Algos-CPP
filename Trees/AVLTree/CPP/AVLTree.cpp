@@ -41,6 +41,7 @@ class AVLTree
 
 int AVLTree::get_node_height(Node *n)
 {   
+    if (n == NULL) return 0;
     int left_height = n && n->left ? n->left->height : 0;
     int right_height = n && n->right ? n->right->height : 0;
     return left_height > right_height ? left_height + 1 : right_height + 1;
@@ -55,15 +56,15 @@ int AVLTree::get_node_balance(Node *n)
 
 Node* AVLTree::get_node_predecessor(Node *n)
 {
-    if (n->right)
-        return get_node_predecessor(n);
+    if (n && n->right)
+        return get_node_predecessor(n->right);
     return n;
 }
 
 Node* AVLTree::get_node_successor(Node *n)
 {
-    if (n->left)
-        return get_node_successor(n);
+    if (n && n->left)
+        return get_node_successor(n->left);
     return n;
 }
 
@@ -156,7 +157,7 @@ Node* AVLTree::rec_insert_helper(Node *n, int item)
 
 void AVLTree::rec_inorder()
 {
-    rec_inorder_helper(root);
+    if (root) rec_inorder_helper(root);
 }
 
 void AVLTree::rec_inorder_helper(Node *n)
@@ -170,6 +171,7 @@ void AVLTree::rec_inorder_helper(Node *n)
 
 void AVLTree::delete_node(int item)
 {
+    cout << "Deleting node: " << item << endl;
     root = delete_node_helper(root, item);
 }
 
@@ -184,6 +186,8 @@ Node* AVLTree::delete_node_helper(Node* n, int item)
     // Leaf Node case
     else if (n->left == NULL && n->right == NULL && n->data == item)
     {
+        if (n == root)
+            root = NULL;
         delete n;
         return NULL;
     }
@@ -213,17 +217,19 @@ Node* AVLTree::fix_tree(Node* n)
     // Left inbalance
     if (balance == 2)
     {   // LL inbalance
-        if (get_node_balance(n->left) == 1)
+        int left_balance = get_node_balance(n->left);
+        if (left_balance <= 1)
             return LL_rotation(n); 
-        else if (get_node_balance(n->left) == -1) // LR inbalance
+        else if (left_balance == -1) // LR inbalance
             return LR_rotation(n);
     }
     // Right inbalance
     if (balance == -2)
     {   // RR inbalance
-        if (get_node_balance(n->right) == -1)
+        int right_balance = get_node_balance(n->right);
+        if (right_balance >= -1)
             return RR_rotation(n);
-        else if (get_node_balance(n->right) == 1) // RL inbalance
+        else if (right_balance == 1) // RL inbalance
             return RL_rotation(n);
     }
     return n;
@@ -232,7 +238,7 @@ Node* AVLTree::fix_tree(Node* n)
 int main()
 {
     AVLTree* avl = new AVLTree();
-    for (int i = 0; i < 20; i++)
+    for (int i = 0; i < 10; i++)
     {
         avl->rec_insert(i);
     }
@@ -240,4 +246,17 @@ int main()
     cout << endl;
     cout << "Root: " << avl->root->data << endl;
     cout << "Height: " << avl->get_node_height(avl->root) << endl;
+    int x;
+    while (true)
+    {
+        cout << "Enter an item to delete: ";
+        cin >> x;
+        avl->delete_node(x);
+        avl->rec_inorder();
+        cout << endl;
+        if (avl->root == NULL)
+            break;
+        cout << "Root: " << avl->root->data << endl;
+    }
+    cout << "Program over." << endl;
 }
