@@ -1,9 +1,8 @@
 #include <iostream>
-#include <queue>
 using namespace std;
 
 /**
- * This is Breadth First Search using an Adjacency Matrix representation of a graph
+ * This is Depth First Search using an Adjacency Matrix representation of a graph
  */
 
 class Graph
@@ -55,39 +54,37 @@ void Graph::populate_graph()
     }
 }
 
-/**
- *  This an iterative BFS implementation using a Queue
- */
-void BFS(Graph* graph)
+/* Function Prototypes */
+void DFS(Graph *graph);
+void DFS_helper(int **graph, int *visited, int u, int n);
+
+/* This is a recursive implementation of DFS */
+void DFS(Graph *graph)
 {
-    queue<int> q;
-    int visited[graph->num_nodes+1];
-    for (int i = 1; i <= graph->num_nodes; i++) 
-    {
-        visited[i] = 0;
-    }
     int start;
-    cout << "Node to start search from: ";
+    cout << "Enter a node to start DFS on: ";
     cin >> start;
-    q.push(start);
-    visited[start] = 1;
-    cout << start << " ";
-    while (!q.empty())
+    int visited[graph->num_nodes+1];
+    for (int i = 1; i <= graph->num_nodes; i++) visited[i] = 0;
+    // This is where we make the initial call
+    DFS_helper(graph->m, visited, start, graph->num_nodes);
+}
+
+void DFS_helper(int **graph, int *visited, int u, int n)
+{
+    if (visited[u] == 0)
     {
-        int n = q.front();
-        for (int v = 1; v <= graph->num_nodes; v++)
+        cout << u << " ";
+        visited[u] = 1;
+        for (int v = 1; v <= n; v++)
         {
-            if (graph->m[n][v] == 1 && visited[v] == 0)
-            {
-                cout << v << " ";
-                q.push(v);
-                visited[v] = 1;
-            }
+            if (graph[u][v] == 1 && visited[v] == 0)
+                DFS_helper(graph, visited, v, n);
         }
-        q.pop();
     }
 }
 
+/* Test Client */
 int main()
 {
     int n;
@@ -96,5 +93,5 @@ int main()
     Graph *graph = new Graph(n);
     graph->populate_graph();
     graph->print_graph();
-    BFS(graph);
+    DFS(graph);
 }
