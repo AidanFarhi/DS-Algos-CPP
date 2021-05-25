@@ -63,7 +63,7 @@ void PrimsAlgo(Graph *graph)
                 new_cost = graph->m[v][k];
             }
         }
-        // now add new edges to spanning tree and add edges to in_tree
+        // now add new node to tree_nodes and in_tree set
         if (u_min < v_min)
         {
             if (new_u != u)
